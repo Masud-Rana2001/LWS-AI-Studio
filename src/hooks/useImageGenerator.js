@@ -5,6 +5,41 @@ const IMAGE_MODEL_URL = 'https://image.pollinations.ai/models';
 const IMAGE_GENERATER_URL = (encodedPrompt, model, width, height, seed) =>
   `https://image.pollinations.ai/prompt/${encodedPrompt}?model=${model}&width=${width}&height=${height}&seed=${seed}`;
 
+
+
+
+
+
+// helper function → retry system
+const fetchWithRetry = async (url, retries = 3, delay = 2000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `Request failed with status ${res.status}`);
+      }
+      return res.url; 
+    } catch (err) {
+      if (i < retries - 1) {
+        console.warn(`Retrying... (${i + 1}/${retries})`);
+        await new Promise(r => setTimeout(r, delay));
+      } else {
+        throw err; 
+      }
+    }
+  }
+};
+
+
+
+
+
+
+
+
+
+
 const useImageGenerator = () => {
   // Input states 
   const [prompt, setPrompt] = useState('');
@@ -52,31 +87,23 @@ const useImageGenerator = () => {
     setErrorState(null);
 
     const numOfImgs = 9;
-    const requestPromises = [];
+    const result = [];
     
+    try {
     for (let i = 0; i < numOfImgs; i++) {
       const encodedPrompt = encodeURIComponent(prompt);
       const imgSeed = seed + i;
       const imageUrl = IMAGE_GENERATER_URL(encodedPrompt, model, width, height, imgSeed);
 
-      const imagePromise = fetch(imageUrl).then(res => {
-        if (!res.ok) {
-          return res.text().then(text =>
-            Promise.reject(new Error(text || `Request failed with status ${res.status}`))
-          );
-        }
-        return res.url; // Need only URL 
-      });
+      const url = await fetchWithRetry(imageUrl, 3, 2000); 
+      result.push(url);
 
-      requestPromises.push(imagePromise);
+      await new Promise(r => setTimeout(r, 1000));
     }
-
-    try {
-      const result = await Promise.all(requestPromises);
       setGeneratedImageUrls(result);
     } catch (error) {
       console.error("Image generation failed:", error.message);
-      setErrorState(`Generation failed: ${error.message}. Note: API has a rate limit (1 req / 5 sec).`);
+      setErrorState(`Generation failed: ${error.message}. Note: API has a rate limit (1 req / 1 sec).`);
     } finally {
       setIsLoading(false);
     }
