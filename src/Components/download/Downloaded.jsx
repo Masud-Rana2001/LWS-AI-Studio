@@ -1,5 +1,5 @@
 import {useContext} from 'react'
-import LocalStorageContext from '../../context/localStorageContext'
+import LocalStorageContext from '../../context/LocalStorageContext'
 import DownloadImageCard from './DownloadImageCard'
 import EmptyState from '../EmptyState';
 

@@ -7,7 +7,7 @@ import EmptyState from '../../EmptyState';
 
 function ImageParent() {
   const { generatedImageUrls,isLoading ,errorState} = useImageContext();
-  console.log(generatedImageUrls.length)
+  
   return (
     <div>
       <h3 className="text-zinc-200 mb-4 font-bold text-lg">Result</h3>
