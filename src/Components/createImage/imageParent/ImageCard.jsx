@@ -5,7 +5,7 @@ import Loading from '../../Loading'
 import useImageGenerator from '../../../hooks/useImageGenerator'
 import downloader from '../../../utils/downloader'
 
-import LocalStorageContext from '../../../context/localStorageContext'
+import LocalStorageContext from '../../../context/LocalStorageContext'
 
 function ImageCard({ imgUrl, index }) {
   
