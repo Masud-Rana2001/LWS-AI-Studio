@@ -2,13 +2,13 @@ import { toast } from 'react-toastify';
 import useImageContext from '../../hooks/useImageContext';
 
 const PromtInput = () => {
-  const { setPrompt, generateImages, prompt, model, width, height, seed } = useImageContext();
+  const {isLoading, setPrompt, generateImages, prompt, model, width, height, seed } = useImageContext();
   
   const handleGenerateImg = () => {
     if (prompt) {
       generateImages(prompt, model, width, height, seed)
     } else {
-      toast.warning("Please! Enter your prompt .", {
+      toast.warning("⚠️Please enter a prompt first!", {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -57,17 +57,41 @@ const PromtInput = () => {
       onChange={(e)=>setPrompt(e.target.value)}
     />
     <button 
-    
-            onClick={handleGenerateImg}
+       disabled={isLoading} 
+      onClick={handleGenerateImg}
             
-    className="bg-zinc-800 hover:bg-zinc-700 transition-colors p-4 mr-1 rounded-full">
-      <svg
-        className="w-6 h-6 text-white transform rotate-90"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-      </svg>
+            className="bg-zinc-800 hover:bg-zinc-700 transition-colors p-4 mr-1 rounded-full">
+            
+         {isLoading ? (
+            <svg
+              className="w-6 h-6 text-white animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              ></path>
+            </svg>
+          ) : (
+            <svg
+              className="w-6 h-6 text-white transform rotate-90"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+            </svg>
+          )}
     </button>
   </div>
 </div>
