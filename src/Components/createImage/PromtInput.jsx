@@ -5,7 +5,7 @@ const PromtInput = () => {
   const {isLoading, setPrompt, generateImages, prompt, model, width, height, seed } = useImageContext();
   
   const handleGenerateImg = () => {
-    console.log("clicked")
+    
     if (prompt) {
       generateImages(prompt, model, width, height, seed)
     } else {
