@@ -85,23 +85,29 @@ const useImageGenerator = () => {
   const generateImages = async (prompt, model, width, height, seed=Math.round(Math.random()*77777777)) => {
     setIsLoading(true);
     setErrorState(null);
+
+    //clear previous generated images
     setGeneratedImageUrls([])
 
     const numOfImgs = 9;
     
     
     try {
+      const newImages = []
+
     for (let i = 0; i < numOfImgs; i++) {
       const encodedPrompt = encodeURIComponent(prompt);
       const imgSeed = seed + i;
       const imageUrl = IMAGE_GENERATER_URL(encodedPrompt, model, width, height, imgSeed);
 
       const url = await fetchWithRetry(imageUrl, 3, 2000); 
-      setGeneratedImageUrls(prev => [...prev, url]);
-
+      newImages.push(url)
       await new Promise(r => setTimeout(r, 1000));
     }
+    setGeneratedImageUrls(newImages);
     
+      
+      
     } catch (error) {
       console.error("Image generation failed:", error.message);
       setErrorState(`Generation failed: ${error.message}. Note: API has a rate limit (1 req / 1 sec).`);
